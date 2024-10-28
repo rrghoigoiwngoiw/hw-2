@@ -1,14 +1,14 @@
-package init
+package main
 
 import (
 	"fmt"
 
-	"github.com/fixme_my_friend/hw02_fix_app/printer"
-	"github.com/fixme_my_friend/hw02_fix_app/reader"
-	"github.com/fixme_my_friend/hw02_fix_app/types"
+	"github.com/rrghoigoiwngoiw/hw-2/hw02_fix_app/printer"
+	"github.com/rrghoigoiwngoiw/hw-2/hw02_fix_app/reader"
+	"github.com/rrghoigoiwngoiw/hw-2/hw02_fix_app/types"
 )
 
-func init() {
+func main() {
 	path := "data.json"
 
 	fmt.Printf("Enter data file path: ")
