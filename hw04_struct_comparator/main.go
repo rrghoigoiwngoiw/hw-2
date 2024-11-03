@@ -38,11 +38,11 @@ func (b *Book) Title() string {
 	return b.title
 }
 
-func (b *Book) SetAutor(author string) {
+func (b *Book) SetAuthor(author string) {
 	b.author = author
 }
 
-func (b *Book) Autor() string {
+func (b *Book) Author() string {
 	return b.author
 }
 
