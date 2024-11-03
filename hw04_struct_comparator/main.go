@@ -108,7 +108,7 @@ func main() {
 	fmt.Scanf("%d %s %s %d %d %f", &id, &title, &author, &year, &size, &rate)
 	book1 := NewBook(id, title, author, year, size, rate)
 
-	fmt.Println("параметры для первой книги (ID, Title, Author, Year, Size, Rate):")
+	fmt.Println("параметры для второй книги (ID, Title, Author, Year, Size, Rate):")
 	fmt.Scanf("%d %s %s %d %d %f", &id, &title, &author, &year, &size, &rate)
 	book2 := NewBook(id, title, author, year, size, rate)
 
