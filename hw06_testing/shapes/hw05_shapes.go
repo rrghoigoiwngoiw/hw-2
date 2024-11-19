@@ -1,7 +1,5 @@
 package shapes
 
-import "errors"
-
 type Shape interface { // интерфейс
 	Area() float64 // метод
 }
@@ -28,12 +26,4 @@ func (c Circle) Area() float64 {
 
 func (t Triangle) Area() float64 {
 	return t.Base * t.Height / 2
-}
-
-func calculateArea(s any) (float64, error) {
-	shape, ok := s.(Shape)
-	if !ok {
-		return 0, errors.New("нет фигуры")
-	}
-	return shape.Area(), nil
 }
