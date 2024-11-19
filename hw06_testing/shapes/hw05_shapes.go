@@ -1,9 +1,6 @@
 package shapes
 
-import (
-	"errors"
-	"fmt"
-)
+import "errors"
 
 type Shape interface { // интерфейс
 	Area() float64 // метод
@@ -39,23 +36,4 @@ func calculateArea(s any) (float64, error) {
 		return 0, errors.New("нет фигуры")
 	}
 	return shape.Area(), nil
-}
-
-func printArea(name string, shape any) {
-	area, err := calculateArea(shape)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Printf("Площадь %s равна: %f\n", name, area)
-}
-
-func shapes() {
-	t := Triangle{10, 7}
-	c := Circle{10}
-	r := Rectangle{15, 3}
-
-	printArea("круг", c)
-	printArea("треугольник", t)
-	printArea("прямоугольник", r)
 }
