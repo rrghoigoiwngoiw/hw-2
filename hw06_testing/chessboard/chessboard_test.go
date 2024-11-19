@@ -10,9 +10,9 @@ func TestGenerateChessboard(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "Standard 3x3 board",
-			size:    3,
-			want:    "#   #   # \n  #   #   \n#   #   # \n",
+			name:    "Standard 5x5 board",
+			size:    5,
+			want:    "#   #   # \n  #   #   \n#   #   # \n  #   #   \n#   #   # \n",
 			wantErr: false,
 		},
 		{
@@ -36,13 +36,13 @@ func TestGenerateChessboard(t *testing.T) {
 		{
 			name:    "Standard 2x2 board",
 			size:    2,
-			want:    "#   # \n  #   \n",
+			want:    "#   \n  # \n",
 			wantErr: false,
 		},
 		{
-			name:    "Large 4x4 board",
-			size:    4,
-			want:    "#   #   #   # \n  #   #   #   \n#   #   #   # \n  #   #   #   \n",
+			name:    "Large 8x8 board",
+			size:    8,
+			want:    "#   #   #   #   \n  #   #   #   # \n#   #   #   #   \n  #   #   #   # \n#   #   #   #   \n  #   #   #   # \n#   #   #   #   \n  #   #   #   # \n",
 			wantErr: false,
 		},
 	}

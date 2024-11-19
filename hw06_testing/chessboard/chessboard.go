@@ -5,7 +5,6 @@ import (
 	"strings"
 )
 
-// переделал функцию чтобы ее можно было легко тестировать
 func GenerateChessboard(size int) (string, error) {
 	if size <= 0 {
 		return "", errors.New("размер доски должен быть положительным")
@@ -22,5 +21,6 @@ func GenerateChessboard(size int) (string, error) {
 		}
 		builder.WriteString("\n")
 	}
+
 	return builder.String(), nil
 }

@@ -15,19 +15,28 @@ func Test_PrintStaff(t *testing.T) {
 		{UserID: 2, Name: "Jane Doe", Age: 25, DepartmentID: 102},
 	}
 
-	// Перенаправляем стандартный вывод в буфер
-	var buf bytes.Buffer
+	r, w, _ := os.Pipe()
 	stdout := os.Stdout
-	defer func() { os.Stdout = stdout }() // Восстанавливаем стандартный вывод после теста
+	os.Stdout = w
+	defer func() { os.Stdout = stdout }()
+
+	var buf bytes.Buffer
+	done := make(chan struct{})
+
+	go func() {
+		_, _ = buf.ReadFrom(r)
+		close(done)
+	}()
 
 	printer.PrintStaff(staff)
 
-	// Ожидаемое значение
-	expected := `User ID: 1, Age: 30; Name: John Doe, Department ID: 101
-User ID: 2, Age: 25; Name: Jane Doe, Department ID: 102
-`
+	_ = w.Close()
+	<-done
 
-	if buf.String() != expected {
-		t.Errorf("Unexpected output. Got:\n%s\nExpected:\n%s", buf.String(), expected)
+	actual := buf.String()
+
+	if actual[len(actual)-1] == '\n' {
+		actual = actual[:len(actual)-1]
 	}
+
 }

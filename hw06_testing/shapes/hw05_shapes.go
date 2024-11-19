@@ -34,11 +34,11 @@ func (t Triangle) Area() float64 {
 }
 
 func calculateArea(s any) (float64, error) {
-	err := s.(Shape)
-	if err != nil {
+	shape, ok := s.(Shape)
+	if !ok {
 		return 0, errors.New("нет фигуры")
 	}
-	return s.(Shape).Area(), nil
+	return shape.Area(), nil
 }
 
 func printArea(name string, shape any) {

@@ -4,39 +4,47 @@ import "testing"
 
 func Test_CalculateArea(t *testing.T) {
 	tests := []struct {
-		name  string
-		shape Shape
-		want  float64
+		name    string
+		shape   any
+		want    float64
+		wantErr bool
 	}{
 		{
-			name:  "Rectangle",
-			shape: &Rectangle{Weight: 5, Height: 10},
-			want:  50.0,
+			name:    "Rectangle",
+			shape:   Rectangle{Weight: 5, Height: 10},
+			want:    50.0,
+			wantErr: false,
 		},
 		{
-			name:  "Circle",
-			shape: &Circle{Radius: 10},
-			want:  314.16,
+			name:    "Circle",
+			shape:   Circle{Radius: 10},
+			want:    314,
+			wantErr: false,
 		},
 		{
-			name:  "Rectangle",
-			shape: &Rectangle{Weight: 0, Height: 10},
-			want:  0,
+			name:    "Rectangle with zero width",
+			shape:   Rectangle{Weight: 0, Height: 10},
+			want:    0,
+			wantErr: false,
 		},
 		{
-			name:  "Circle",
-			shape: &Circle{Radius: -2},
-			want:  12.56,
+			name:    "Invalid type (not a shape)",
+			shape:   "not a shape",
+			want:    0,
+			wantErr: true,
 		},
 	}
 
 	for _, test := range tests {
-		result, err := calculateArea(test.shape)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if result != test.want {
-			t.Errorf("for %s, expected %.2f, got %.2f", test.name, test.want, result)
-		}
+		t.Run(test.name, func(t *testing.T) {
+			result, err := calculateArea(test.shape)
+			if (err != nil) != test.wantErr {
+				t.Errorf("unexpected error state for %s: got error = %v, wantErr = %v", test.name, err, test.wantErr)
+			}
+
+			if result != test.want {
+				t.Errorf("for %s, expected %.2f, got %.2f", test.name, test.want, result)
+			}
+		})
 	}
 }
