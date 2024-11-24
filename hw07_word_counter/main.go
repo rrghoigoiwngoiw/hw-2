@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-func countWords(text string) map[string]int {
+func CountWords(text string) map[string]int {
 	text = strings.ToLower(text)
 
 	words := strings.FieldsFunc(text, func(r rune) bool {
