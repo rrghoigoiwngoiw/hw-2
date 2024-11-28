@@ -1,3 +1,3 @@
-module github.com/fixme_my_friend/hw08_binary_search
+module github.com/rrghoigoiwngoiw/hw-2/hw08_binary_search
 
 go 1.20
