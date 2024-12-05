@@ -1,5 +1,22 @@
-package main
+package countwords
 
-func main() {
-	// Place your code here.
+import (
+	"strings"
+	"unicode"
+)
+
+func CountWords(text string) map[string]int {
+	text = strings.ToLower(text)
+
+	words := strings.FieldsFunc(text, func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
+	})
+
+	wordCount := make(map[string]int)
+
+	for _, word := range words {
+		wordCount[word]++
+	}
+
+	return wordCount
 }
