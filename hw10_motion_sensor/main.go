@@ -11,7 +11,7 @@ func Sensor() {
 	processedData := make(chan float64)
 
 	go func() {
-		defer close(sensorData) // Закрываем канал после завершения работы
+		defer close(sensorData)
 		start := time.Now()
 		for time.Since(start) < 1*time.Minute {
 			data := rand.Intn(100)
@@ -20,9 +20,8 @@ func Sensor() {
 		}
 	}()
 
-	// Горутина для обработки данных
 	go func() {
-		defer close(processedData) // Закрываем канал после завершения работы
+		defer close(processedData)
 		buffer := make([]int, 0, 10)
 		for data := range sensorData {
 			buffer = append(buffer, data)

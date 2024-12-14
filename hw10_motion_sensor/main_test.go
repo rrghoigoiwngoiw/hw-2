@@ -6,21 +6,19 @@ import (
 )
 
 func runSensorTest(t *testing.T, randomValues []int, expectedAvg []float64) {
-	t.Helper() // Помечаем функцию как вспомогательную для тестов
+	t.Helper()
 
 	sensorData := make(chan int, len(randomValues))
 	processedData := make(chan float64)
 
-	// Имитация работы сенсора
 	go func() {
 		defer close(sensorData)
 		for _, value := range randomValues {
 			sensorData <- value
-			time.Sleep(10 * time.Millisecond) // Имитация задержки
+			time.Sleep(10 * time.Millisecond)
 		}
 	}()
 
-	// Обработка данных
 	go func() {
 		defer close(processedData)
 		buffer := make([]int, 0, 10)
@@ -37,8 +35,7 @@ func runSensorTest(t *testing.T, randomValues []int, expectedAvg []float64) {
 		}
 	}()
 
-	// Сравнение результатов
-	results := make([]float64, 0, len(expectedAvg)) // Предварительное выделение памяти
+	results := make([]float64, 0, len(expectedAvg))
 	for avg := range processedData {
 		results = append(results, avg)
 	}
