@@ -8,36 +8,34 @@ import (
 )
 
 func Sensor() {
-	sensorData := make(chan int)
 	processedData := make(chan float64)
-
+	var sensorData []int
 	go func() {
-		defer close(sensorData)
 		start := time.Now()
 		for time.Since(start) < 1*time.Minute {
 			n, err := rand.Int(rand.Reader, big.NewInt(100))
 			if err != nil {
-				panic(err) // Обработка ошибки
+				panic(err)
 			}
-			data := int(n.Int64()) // Преобразование в int
-			sensorData <- data
+			data := int(n.Int64())
+			sensorData = append(sensorData, data)
 			time.Sleep(1 * time.Second)
 		}
 	}()
 
 	go func() {
 		defer close(processedData)
-		buffer := make([]int, 0, 10)
+		count := 0
+		sum := 0
+
 		for data := range sensorData {
-			buffer = append(buffer, data)
-			if len(buffer) == 10 {
-				sum := 0
-				for _, value := range buffer {
-					sum += value
-				}
+			sum += data
+			count++
+			if count == 10 {
 				average := float64(sum) / 10.0
 				processedData <- average
-				buffer = buffer[:0]
+				count = 0
+				sum = 0
 			}
 		}
 	}()
