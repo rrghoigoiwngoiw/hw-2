@@ -1,8 +1,9 @@
 package sensor
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"time"
 )
 
@@ -14,7 +15,11 @@ func Sensor() {
 		defer close(sensorData)
 		start := time.Now()
 		for time.Since(start) < 1*time.Minute {
-			data := rand.Intn(100)
+			n, err := rand.Int(rand.Reader, big.NewInt(100))
+			if err != nil {
+				panic(err) // Обработка ошибки
+			}
+			data := int(n.Int64()) // Преобразование в int
 			sensorData <- data
 			time.Sleep(1 * time.Second)
 		}
