@@ -18,8 +18,14 @@ func Sensor() {
 				panic(err)
 			}
 			data := int(n.Int64())
-			sensorData = append(sensorData, data)
-			time.Sleep(1 * time.Second)
+			t := time.NewTimer(60 * time.Second)
+			outCh := make(chan int)
+			for {
+				select {
+				case <-t.C:
+				case outCh <- data:
+				}
+			}
 		}
 	}()
 
