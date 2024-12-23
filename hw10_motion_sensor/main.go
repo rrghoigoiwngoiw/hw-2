@@ -1,9 +1,7 @@
 package sensor
 
 import (
-	"crypto/rand"
 	"fmt"
-	"math/big"
 	"time"
 )
 
@@ -11,20 +9,13 @@ func Sensor() {
 	processedData := make(chan float64)
 	var sensorData []int
 	go func() {
-		start := time.Now()
-		for time.Since(start) < 1*time.Minute {
-			n, err := rand.Int(rand.Reader, big.NewInt(100))
-			if err != nil {
-				panic(err)
-			}
-			data := int(n.Int64())
-			t := time.NewTimer(60 * time.Second)
-			outCh := make(chan int)
-			for {
-				select {
-				case <-t.C:
-				case outCh <- data:
-				}
+		data := int(n.Int64())
+		t := time.NewTimer(60 * time.Second)
+		outCh := make(chan int)
+		for {
+			select {
+			case <-t.C:
+			case outCh <- data:
 			}
 		}
 	}()
