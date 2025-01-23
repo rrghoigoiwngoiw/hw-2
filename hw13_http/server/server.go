@@ -18,7 +18,7 @@ func Server() {
 
 	fmt.Printf("Сервер запущен на %s\n", serverAddr)
 
-	// Настраиваем маршруты сервера
+	//  маршруты сервера
 	http.HandleFunc("/get", HandleGet)
 	http.HandleFunc("/post", HandlePost)
 
@@ -37,7 +37,12 @@ func Server() {
 	}
 }
 
-func HandleGet(w http.ResponseWriter, _ *http.Request) {
+func HandleGet(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
+		return
+	}
+
 	fmt.Println("Зарегистрирован GET-запрос")
 
 	w.WriteHeader(http.StatusOK)
@@ -45,6 +50,10 @@ func HandleGet(w http.ResponseWriter, _ *http.Request) {
 }
 
 func HandlePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
+		return
+	}
 	fmt.Println("Получен POST-запрос")
 
 	body := make([]byte, r.ContentLength)
