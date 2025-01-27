@@ -3,6 +3,7 @@ package server // с сервером вроде все
 import (
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -50,18 +51,19 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodPost { // Исправлено с http.MethodGet на http.MethodPost
 		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
 		return
 	}
+
 	fmt.Println("Получен POST-запрос")
 
-	body := make([]byte, r.ContentLength)
-	_, err := r.Body.Read(body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
 		return
 	}
+	defer r.Body.Close() // Закрытие тела запроса
 
 	fmt.Printf("Данные от клиента: %s\n", string(body))
 

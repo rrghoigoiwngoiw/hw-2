@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"flag"
 	"os"
 	"os/exec"
@@ -12,9 +13,10 @@ func TestRunClient_MissingURL(t *testing.T) {
 	cmd := exec.Command(os.Args[0], "-test.run=TestRunClient_MissingURL_Helper")
 	cmd.Env = append(os.Environ(), "TEST_MISSING_URL=1")
 
-	// ошибкa
+	// ошибка
 	err := cmd.Run()
-	if exitError, ok := err.(*exec.ExitError); ok {
+	var exitError *exec.ExitError
+	if errors.As(err, &exitError) {
 		if exitError.ExitCode() != 1 {
 			t.Errorf("ожидался код выхода 1, получен: %d", exitError.ExitCode())
 		}
@@ -23,7 +25,7 @@ func TestRunClient_MissingURL(t *testing.T) {
 	}
 }
 
-func TestRunClient_MissingURL_Helper(t *testing.T) {
+func TestRunClient_MissingURL_Helper(_ *testing.T) {
 	if os.Getenv("TEST_MISSING_URL") != "1" {
 		return
 	}
