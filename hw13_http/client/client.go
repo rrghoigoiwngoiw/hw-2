@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func RunClient() {
+func RunClient() error {
 	method := flag.String("method", "GET", "HTTP метод: GET или POST")
 	url := flag.String("url", "", "Полный URL сервера")
 	data := flag.String("data", "", "Данные для отправки в POST-запросе")
@@ -35,13 +35,13 @@ func RunClient() {
 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, *url, nil)
 		if err != nil {
 			fmt.Printf("Ошибка при создании GET-запроса: %v\n", err)
-			return
+			return err
 		}
 
 		response, err := client.Do(req)
 		if err != nil {
 			fmt.Printf("Ошибка при выполнении GET-запроса: %v\n", err)
-			return
+			return err
 		}
 		defer response.Body.Close()
 
@@ -52,14 +52,14 @@ func RunClient() {
 		req, err := http.NewRequestWithContext(ctx, http.MethodPost, *url, bytes.NewBufferString(*data))
 		if err != nil {
 			fmt.Printf("Ошибка при создании POST-запроса: %v\n", err)
-			return
+			return err
 		}
 		req.Header.Set("Content-Type", "application/json")
 
 		response, err := client.Do(req)
 		if err != nil {
 			fmt.Printf("Ошибка при выполнении POST-запроса: %v\n", err)
-			return
+			return err
 		}
 		defer response.Body.Close()
 
@@ -67,6 +67,8 @@ func RunClient() {
 		fmt.Printf("Ответ сервера: %s\n", string(body))
 
 	default:
-		fmt.Println("Ошибка: Поддерживаются только методы GET и POST")
+		return fmt.Errorf("ошибка: Поддерживаются только методы GET и POST")
 	}
+
+	return nil
 }

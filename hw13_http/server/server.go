@@ -50,7 +50,7 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
 		return
 	}
