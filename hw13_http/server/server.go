@@ -51,7 +51,7 @@ func HandleGet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost { // Исправлено с http.MethodGet на http.MethodPost
+	if r.Method != http.MethodPost {
 		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
 		return
 	}
@@ -63,7 +63,7 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
 		return
 	}
-	defer r.Body.Close() // Закрытие тела запроса
+	defer r.Body.Close()
 
 	fmt.Printf("Данные от клиента: %s\n", string(body))
 

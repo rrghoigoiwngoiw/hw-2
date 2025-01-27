@@ -15,6 +15,8 @@ func TestHandleGet(t *testing.T) {
 	HandleGet(w, req)
 
 	res := w.Result()
+	defer res.Body.Close() // Закрытие тела ответа
+
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("ожидался статус %d, получен %d", http.StatusOK, res.StatusCode)
 	}
@@ -34,6 +36,8 @@ func TestHandleGet_WrongMethod(t *testing.T) {
 	HandleGet(w, req)
 
 	res := w.Result()
+	defer res.Body.Close() // Закрытие тела ответа
+
 	if res.StatusCode != http.StatusMethodNotAllowed {
 		t.Errorf("ожидался статус %d, получен %d", http.StatusMethodNotAllowed, res.StatusCode)
 	}
@@ -54,6 +58,8 @@ func TestHandlePost(t *testing.T) {
 	HandlePost(w, req)
 
 	res := w.Result()
+	defer res.Body.Close() // Закрытие тела ответа
+
 	if res.StatusCode != http.StatusOK {
 		t.Errorf("ожидался статус %d, получен %d", http.StatusOK, res.StatusCode)
 	}
@@ -72,6 +78,8 @@ func TestHandlePost_WrongMethod(t *testing.T) {
 	HandlePost(w, req)
 
 	res := w.Result()
+	defer res.Body.Close() // Закрытие тела ответа
+
 	if res.StatusCode != http.StatusMethodNotAllowed {
 		t.Errorf("ожидался статус %d, получен %d", http.StatusMethodNotAllowed, res.StatusCode)
 	}

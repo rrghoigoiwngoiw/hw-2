@@ -45,7 +45,11 @@ func RunClient() error {
 		}
 		defer response.Body.Close()
 
-		body, _ := io.ReadAll(response.Body)
+		body, err := io.ReadAll(response.Body)
+		if err != nil {
+			fmt.Printf("Ошибка при чтении ответа сервера: %v\n", err)
+			return err
+		}
 		fmt.Printf("Ответ сервера: %s\n", string(body))
 
 	case "POST":
@@ -63,7 +67,11 @@ func RunClient() error {
 		}
 		defer response.Body.Close()
 
-		body, _ := io.ReadAll(response.Body)
+		body, err := io.ReadAll(response.Body)
+		if err != nil {
+			fmt.Printf("Ошибка при чтении ответа сервера: %v\n", err)
+			return err
+		}
 		fmt.Printf("Ответ сервера: %s\n", string(body))
 
 	default:
