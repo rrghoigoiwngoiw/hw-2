@@ -97,3 +97,11 @@ JOIN OrderProducts op ON o.id = op.order_id
 JOIN Products p ON op.product_id = p.id
 WHERE u.id = 1
 GROUP BY u.id, u.name;
+
+create index idx_users_email on Users(email)
+
+create index idx_orders_id on Orders(order_id)
+create index idx_order_date on Orders(order_date)
+
+create index idx_product_name on Products(name)
+create index idx_product_price on Products(price)
