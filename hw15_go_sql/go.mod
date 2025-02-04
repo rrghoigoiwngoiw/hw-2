@@ -1,3 +1,3 @@
-module github.com/fixme_my_friend/hw15_go_sql
+module github.com/frrghoigoiwngoiw/hw-2/hw15_go_sql
 
 go 1.20
