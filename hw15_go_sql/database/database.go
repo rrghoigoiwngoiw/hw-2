@@ -83,6 +83,7 @@ func (db *DB) DeleteProduct(id int) error {
 	_, err := db.Exec(query, id)
 	return err
 }
+
 func (db *DB) GetPriceByName(id int) (*Product, error) {
 	query := `SELECT price FROM products WHERE id = $1`
 	row := db.QueryRow(query, id)
