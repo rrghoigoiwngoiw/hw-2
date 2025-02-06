@@ -9,21 +9,14 @@ type DB struct {
 	*sql.DB
 }
 
-func NewConection(dbname, user, password, host string, port int) (*DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+func NewConnection(dbname, user, password, host string, port int) (*DB, error) {
+	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
 	}
-
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-
-	return &DB{db}, nil
+	return &DB{db}, nil // Возвращаем *database.DB
 }
 
 type User struct {
@@ -131,6 +124,34 @@ func (db *DB) GetOrderByID(id int) (*Orders, error) {
 	}
 
 	return &order, nil
+}
+
+func (db *DB) GetOrdersByUserID(userID int) ([]Orders, error) {
+	query := `SELECT id, user_id, order_date, total_amount FROM orders WHERE user_id = $1`
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var orders []Orders
+	var scanErr error // Объявляем переменную для ошибок сканирования
+
+	for rows.Next() {
+		var order Orders
+		scanErr = rows.Scan(&order.ID, &order.UserID, &order.OrderDate, &order.TotalAmount)
+		if scanErr != nil {
+			return nil, scanErr
+		}
+		orders = append(orders, order)
+	}
+
+	// Проверяем ошибки, которые могли возникнуть после цикла
+	if rowsErr := rows.Err(); rowsErr != nil {
+		return nil, rowsErr
+	}
+
+	return orders, nil
 }
 
 func (db *DB) AddProductToOrder(orderID, productID, quantity int) error {

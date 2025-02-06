@@ -1,72 +1,58 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"io"
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
+
+	"github.com/frrghoigoiwngoiw/hw-2/hw15_go_sql/database"
+	"github.com/frrghoigoiwngoiw/hw-2/hw15_go_sql/handlers"
 )
 
-func Server() {
-	address := flag.String("address", "127.0.0.1", "Адрес сервера")
-	port := flag.String("port", "8080", "Порт сервера")
+func main() {
+	db, err := database.NewConnection("dbonlinestore", "db_user", "password", "localhost", 5432)
+	if err != nil {
+		log.Fatalf("Ошибка подключения к базе данных: %v", err)
+	}
+	defer db.Close()
 
-	flag.Parse()
+	h := &handlers.Handlers{DB: db}
 
-	serverAddr := fmt.Sprintf("%s:%s", *address, *port)
+	http.HandleFunc("/users/add", h.CreateUserHandler)
+	http.HandleFunc("/users/get", h.GetUserHandler)
+	http.HandleFunc("/products/add", h.CreateProductHandler)
+	http.HandleFunc("/orders", h.GetOrdersHandler)
 
-	fmt.Printf("Сервер запущен на %s\n", serverAddr)
-
-	//  маршруты сервера
-	http.HandleFunc("/get", HandleGet)
-	http.HandleFunc("/post", HandlePost)
-
-	// Создаем сервер с тайм-аутами
-	srv := &http.Server{
-		Addr:         serverAddr,
-		Handler:      nil,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+	server := &http.Server{
+		Addr:         ":8080",
+		ReadTimeout:  15 * time.Second,
+		WriteTimeout: 15 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// Запускаем сервер
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatalf("Ошибка при запуске сервера: %v", err)
-	}
-}
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-func HandleGet(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
-		return
-	}
+	go func() {
+		log.Println("Сервер запущен на :8080")
+		if listenErr := server.ListenAndServe(); listenErr != nil && listenErr != http.ErrServerClosed {
+			log.Printf("Ошибка запуска сервера: %v", listenErr)
+		}
+	}()
 
-	fmt.Println("Зарегистрирован GET-запрос")
+	<-done
+	log.Println("Сервер завершает работу...")
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "вот ответ и вот еще ответ")
-}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-func HandlePost(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Метод не подходит", http.StatusMethodNotAllowed)
-		return
+	if shutdownErr := server.Shutdown(ctx); shutdownErr != nil {
+		log.Printf("Ошибка при завершении работы сервера: %v", shutdownErr)
 	}
 
-	fmt.Println("Получен POST-запрос")
-
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, "Ошибка чтения тела запроса", http.StatusInternalServerError)
-		return
-	}
-	defer r.Body.Close()
-
-	fmt.Printf("Данные от клиента: %s\n", string(body))
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("Клиент говорит: %s", string(body))))
+	log.Println("Сервер успешно остановлен")
 }
