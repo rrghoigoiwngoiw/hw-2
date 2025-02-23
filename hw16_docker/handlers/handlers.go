@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/frrghoigoiwngoiw/hw-2/hw15_go_sql/database"
+	"github.com/frrghoigoiwngoiw/hw-2/hw16_docker/database"
 )
 
 type Handlers struct {
