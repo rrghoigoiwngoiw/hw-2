@@ -11,6 +11,7 @@ import (
 
 	"github.com/frrghoigoiwngoiw/hw-2/hw16_docker/database"
 	"github.com/frrghoigoiwngoiw/hw-2/hw16_docker/handlers"
+	_ "github.com/lib/pq"
 )
 
 func main() {
